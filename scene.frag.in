@@ -1,0 +1,87 @@
+#version 300 es
+precision highp float;
+precision highp int;
+uniform vec2 u_resolution;
+uniform vec2 u_pointer;
+uniform int u_mode;
+out vec4 o;
+const int PHASE=@PHASE@;
+const int LEN=@LEN@;
+const int NL=@NL@;
+const int LS[@NL@]=int[](@LINES@);
+const uint SRC[@COUNT@]=uint[](@WORDS@);
+const uint FONT[95]=uint[](@FONT@);
+uint B(int i){return i>=0&&i<LEN?(SRC[i>>2]>>(8*(i&3)))&255u:0u;}
+float glyph(vec2 cell,int index){
+ ivec2 p=ivec2(floor(fract(cell)*vec2(6.,8.)));
+ int c=int(B(index))-32;
+ if(c<0||c>94||p.x>4||p.y>5)return 0.;
+ return float((FONT[c]>>(p.y*5+p.x))&1u);
+}
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+void main(){
+ if(u_mode==0){ivec2 p=ivec2(gl_FragCoord.xy);int k=(p.y*64+p.x)*3;
+ o=vec4(uvec4(B(k),B(k+1),B(k+2),255u))/255.;return;}
+ if(u_mode==2){
+  ivec2 p=ivec2(gl_FragCoord.xy);int row=(int(u_resolution.y)-1-p.y)/9;
+  int x=p.x/8, gx=p.x%8, gy=(int(u_resolution.y)-1-p.y)%9;
+  if(row>=NL-1){o=vec4(.027,.051,.047,1.);return;}
+  int start=LS[row],end=LS[row+1]-1;
+  int i=start+x;uint c=B(i);float ink=0.;
+  if(row<83&&i<=end){
+   if(gy<6&&gx<5&&c>=32u&&c<=126u)ink=float((FONT[int(c)-32]>>(gy*5+gx))&1u);
+   // The last row visibly encodes all eight bits, including spaces. No OCR ambiguity.
+   if(gy==7)ink=float((c>>gx)&1u);
+  }
+  o=vec4(mix(vec3(.027,.051,.047),vec3(.78,.84,.62),ink),1.);return;
+ }
+ vec2 uv=(2.*gl_FragCoord.xy-u_resolution)/min(u_resolution.x,u_resolution.y);
+ float t=float(PHASE)*6.2831853/24.;
+ uv+=u_pointer*.055;
+ float tilt=.08*sin(t)+u_pointer.y*.10;
+ uv.y*=1.0+tilt;
+ float rotation=.06*sin(t)+u_pointer.x*.12;
+ uv=mat2(cos(rotation),-sin(rotation),sin(rotation),cos(rotation))*uv;
+ float r=length(uv),a=atan(uv.y,uv.x),pi=3.14159265;
+ vec3 col=vec3(.018,.026,.028);
+ float mist=exp(-abs(r-.78)*7.);
+ col+=vec3(.019,.045,.04)*mist;
+ float breath=.025*sin(t);
+ float twist=a+t+u_pointer.x*.35;
+ // Forty-eight strands: a living, braided torus made from its own Ruby bytes.
+ for(int j=0;j<48;j++){
+  float f=float(j)/48.,phase=f*2.*pi;
+  float wave=sin(twist*3.+phase-t*2.);
+  float radius=.73+breath+.125*wave+.014*sin(a*5.-t);
+  float d=abs(r-radius);
+  float front=.45+.55*(.5+.5*cos(twist*3.+phase-t*2.));
+  float pulse=pow(.5+.5*cos(a-t+phase),12.);
+  vec3 gold=vec3(.95,.65,.28),jade=vec3(.10,.63,.55);
+  vec3 hue=mix(jade,gold,.5+.5*sin(phase+a*1.5+t));
+  float line=.0015/(d+.0035);
+  float glow=.00020/(d*d+.00010);
+  col+=hue*(line*.09+glow*.016)*front*(.55+pulse);
+  if(d<.012){
+   vec2 cell=vec2((a+pi)/(2.*pi)*180.+sin(t)*12., (r-radius)/.024+.5);
+   int idx=(int(floor(cell.x))+j*181)%LEN;
+   col+=hue*glyph(cell,idx)*.7*front;
+  }
+ }
+ // Orbiting sparks carry source bytes as moving starlight.
+ for(int j=0;j<28;j++){
+  float id=float(j),h=hash(vec2(id,7.));
+  float an=id*2.39996+t*(1.+floor(h*2.));
+  float rr=.96+.16*sin(id*3.+t);
+  vec2 pos=rr*vec2(cos(an),sin(an));
+  float d=length(uv-pos);
+  col+=mix(vec3(.1,.45,.4),vec3(.9,.55,.2),h)*.000025/(d*d+.00004);
+ }
+ float circle=abs(r-1.18);
+ col+=vec3(.18,.25,.23)*(.0005/(circle+.005));
+ float dust=step(.997,hash(floor(gl_FragCoord.xy/2.)))*(.15+.10*sin(t+r*12.));
+ col+=dust*vec3(.45,.51,.44);
+ col*=1.-.18*min(r*r,2.);
+ col=1.-exp(-col*1.45);
+ col+= (hash(gl_FragCoord.xy+fract(t))-.5)/180.;
+ o=vec4(col,1.);
+}

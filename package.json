@@ -1,0 +1,15 @@
+{
+  "name": "glslkit-quine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "描画したRubyを実行して24世代で巡る周期Quine",
+  "scripts": {
+    "build": "bundle exec ruby build.rb",
+    "test": "bundle exec ruby test/verify.rb",
+    "test:browser": "bundle exec ruby test/run_browser.rb"
+  },
+  "dependencies": {
+    "@ruby/wasm-wasi": "2.10.1",
+    "@ruby/4.0-wasm-wasi": "2.10.1"
+  }
+}

@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+require 'rbconfig'
+require 'rubygems'
+ROOT=File.expand_path('..',__dir__)
+Dir.chdir(ROOT) do
+  abort 'bundle install failed' unless system(RbConfig.ruby,Gem.bin_path('bundler','bundle'),'install')
+  abort 'npm ci failed' unless system('npm','ci')
+  abort 'build failed' unless system(RbConfig.ruby,'build.rb')
+end

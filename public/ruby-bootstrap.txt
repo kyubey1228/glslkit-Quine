@@ -1,0 +1,21 @@
+require 'stringio'
+LOADED={}
+module Kernel
+  alias_method :__original_require, :require
+  def __load_core(path)
+    return false if LOADED[path]
+    LOADED[path]=true
+    eval(SOURCES.fetch(path),TOPLEVEL_BINDING,path)
+    true
+  end
+  def require(name)
+    path="/core/lib/#{name}.rb"
+    SOURCES.key?(path) ? __load_core(path) : __original_require(name)
+  end
+  def require_relative(name)
+    path=File.expand_path(name,File.dirname(caller_locations(1,1)[0].path))
+    path+='.rb' unless path.end_with?('.rb')
+    SOURCES.key?(path) ? __load_core(path) : __original_require(path)
+  end
+end
+require 'glslkit'

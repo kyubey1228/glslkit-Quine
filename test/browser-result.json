@@ -1,0 +1,18 @@
+{
+  "visible_pixels_equal_source": true,
+  "extraction_depends_on_drawn_pixels": true,
+  "automatic_playback_executes_ruby": true,
+  "real_ruby_output_becomes_next_frame": true,
+  "next_art_changes_pixels": true,
+  "all_24_generations_executed": true,
+  "cycle_source_exact": true,
+  "cycle_visible_pixels_exact": true,
+  "cycle_art_exact": true,
+  "glslkit_runs_in_browser": true,
+  "pause": true,
+  "resume": true,
+  "speed": true,
+  "source_dialog": true,
+  "zoom_preserves_extraction": true,
+  "no_gl_error": true
+}

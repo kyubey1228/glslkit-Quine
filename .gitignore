@@ -1,0 +1,11 @@
+/.bundle/
+/vendor/bundle/
+/node_modules/
+/log/
+/tmp/
+/public/assets/
+/index.html
+/public/ruby.wasm
+/public/ruby-runtime.js
+/public/glslkit-sources.json
+/public/manifest.json
