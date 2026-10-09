@@ -37,6 +37,7 @@ bundle exec ruby bin/rails server -b 127.0.0.1 -p 3100
 - **次の姿**：描画したコードを読み取り、Rubyを1回実行します。
 - **一周を検証**：24世代を実行し、一周後のソースが開始時と全バイト一致することを確認します。
 - **ソース**：現在の世代のRubyを、GPUが描いたコードシートで表示します。全体表示と原寸表示を切り替えられます。
+- **.fragを見る**：作品画面右上、またはソース画面からビューアを開き、生成した `frame.frag` を選択・ドラッグ＆ドロップしてその世代の姿を表示します。
 - **コードをコピー**：ソース画面から、描画ピクセルで復元した現在のRubyを改行・空白ごとコピーします。
 - **Ruby**：コードシートのピクセルから取り出した、現在の世代のRubyを保存します。
 
@@ -63,6 +64,8 @@ ruby public/ouroboros.rb > next.rb
 ruby next.rb > after.rb
 ruby public/ouroboros.rb --shader > frame.frag
 ```
+
+生成した `frame.frag` は、作品画面の「.fragを見る」から開くビューアで表示できます。ビューアはセットアップ時に生成され、Rails版と単体HTML版のどちらからも参照できます。
 
 通常実行は次のRubyだけを出力し、`--shader` はその世代自身のGLSLを出力する追加モードです。
 
@@ -98,7 +101,7 @@ bundle exec ruby test/run_browser.rb
 - `test/verify.rb`：標準入力からの24世代循環、minify後のコード保持、Rails配信の検証。
 - `test/run_browser.rb`：実際の描画からの抽出、自動再生、24世代の実行、コードと絵の循環など19項目の検証。
 
-CRuby 3.3.3で3テスト・135アサーション、Chrome / WebGL2で19項目の成功を確認しています。[ブラウザ検証結果](test/browser-result.json)も記録しています。Safari / Firefoxは未検証です。
+CRuby 3.3.3で3テスト・142アサーション、Chrome / WebGL2で19項目の成功を確認しています。[ブラウザ検証結果](test/browser-result.json)も記録しています。Safari / Firefoxは未検証です。
 
 `node_modules`、Rubyランタイム、約42MBの単体HTMLなどの再生成可能なファイルはGitに含めません。実行できるQuineと初期GLSL、画像はリポジトリに含めています。
 

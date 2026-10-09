@@ -36,6 +36,9 @@ resolver=Glslkit::Resolvers::Hash.new('ouroboros.vert'=>vert,'ouroboros.frag'=>f
 bundle=Glslkit::Bundle.build(resolver: resolver,name:'ouroboros',vertex:'ouroboros.vert',fragment:'ouroboros.frag',line_directives:false)
 raise bundle.diagnostics.map(&:to_s).join("\n") unless bundle.ok?
 File.write(File.join(root,'public','manifest.json'),JSON.pretty_generate(bundle.manifest))
+viewer=File.read(File.join(root,'lib/frame-viewer.html.in'))
+viewer=viewer.sub('__VERTEX__') { JSON.generate(vert) }.sub('__MANIFEST__') { JSON.generate(bundle.manifest) }
+File.write(File.join(root,'public/frame-viewer.html'),viewer)
 core_root=File.join(Gem.loaded_specs.fetch('glslkit').full_gem_path,'lib')
 core=Dir[File.join(core_root,'**/*.rb')].to_h { |f| ['/core/lib/'+f.delete_prefix(core_root+'/'),File.read(f)] }
 core_json=JSON.generate(core).gsub('</','<\\/')
@@ -57,6 +60,7 @@ replacements={
  '<script src="/gallery.js" defer></script>' => "<script>#{File.read(File.join(root,'public/gallery.js'))}</script>"
 }
 replacements.each { |from,to| page=page.sub(from) { to } }
+page=page.gsub('href="/frame-viewer.html"','href="public/frame-viewer.html"')
 # Embed the runtime for the file:// edition. Rails serves the same binary locally.
 wasm=[File.binread(File.join(root,'public/ruby.wasm'))].pack('m0')
 page=page.sub('</body>') { "<script type=\"application/octet-stream\" id=\"ruby-wasm-data\">#{wasm}</script></body>" }

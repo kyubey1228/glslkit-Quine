@@ -38,6 +38,11 @@ class OuroborosTest < Minitest::Test
     assert_equal 200, session.response.status
     html=session.response.body
     assert_includes html, 'id="ouroboros-frag"'
+    assert_includes html, 'href="/frame-viewer.html"'
+    session.get('/frame-viewer.html')
+    assert_equal 200,session.response.status
+    assert_includes session.response.body.b,'frame.frag を選ぶ'.b
+    refute_match(/__(?:VERTEX|MANIFEST)__/,session.response.body)
     manifest=JSON.parse(html[/<script[^>]*id="glsl-manifest"[^>]*>(.*?)<\/script>/m,1])
     uniforms=manifest.fetch('programs').fetch('ouroboros').fetch('uniforms')
     assert_equal %w[u_mode u_pointer u_resolution], uniforms.map { _1.fetch('name') }.sort
