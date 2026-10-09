@@ -63,7 +63,8 @@ function readFailureDetails(start,index){
   if(gl.getError()!==gl.NO_ERROR)throw new Error('診断描画');data=pixel[index%3];
  }catch(error){data=error.message;}
  finally{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.deleteTexture(tex);gl.deleteFramebuffer(fb);gl.useProgram(program);gl.viewport(...viewport);}
- return 'GPU点列: '+raw.join(',')+'; GPUバイト: '+data+'; GPU: '+gl.getParameter(gl.RENDERER);
+ const info=gl.getExtension('WEBGL_debug_renderer_info'),renderer=info?gl.getParameter(info.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER);
+ return 'GPU点列: '+raw.join(',')+'; GPUバイト: '+data+'; 期待バイト: '+new TextEncoder().encode(source)[index]+'; GPU: '+renderer;
 }
 function extractCode(){
  // Read the actual displayed glyph pixels. No SRC[] or source string is used here.
