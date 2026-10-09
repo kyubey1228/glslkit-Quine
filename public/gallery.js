@@ -46,8 +46,8 @@ function extractCode(){
  for(let row=0;row<rows;row++){
   let ended=false;
   for(let col=0;col<201;col++){
-   let byte=0;for(let bit=0;bit<8;bit++){const offset=((row*9+7)*w+col*8+bit)*4;if(pixels[offset]>128)byte|=1<<bit;}
-   bytes.push(byte);if(byte===10){ended=true;break;}if(byte===0)throw new Error('描画コードを読み取れません: '+row+','+col);
+   let byte=0;const start=((row*9+7)*w+col*8)*4;for(let bit=0;bit<8;bit++){if(pixels[start+bit*4]>128)byte|=1<<bit;}
+   bytes.push(byte);if(byte===10){ended=true;break;}if(byte===0){const levels=Array.from({length:8},(_,bit)=>pixels[start+bit*4]);throw new Error('描画コードを読み取れません: '+row+','+col+' (赤成分: '+levels.join(',')+')');}
   }
   if(!ended)throw new Error('コードの改行を読み取れません');
  }

@@ -9,9 +9,12 @@ root = __dir__
 hex = Zlib::Deflate.deflate(File.read(File.join(root, 'scene.frag.in')), 9).unpack1('H*')
 # The emitter lives in every generation. $s is the executed, whitespace-free body.
 # Its only comment begins at the final #; no source files are read.
+# The shader source words are emitted in blocks of at most 256 uints, avoiding
+# one large dynamically indexed constant array on mobile GPU drivers.
 emitter = 'e=->(k){a=k*Math::PI/12;v=($s.split(35.chr)[0]+35.chr).chars;rows=Array.new(80){|y|Array.new(200){|x|xx=(x-99.5)/98;yy=(y-39.5)/38;rr=Math.sqrt(xx*xx+yy*yy);ang=Math.atan2(yy,xx);on=rr<0.97+0.025*Math.cos(3*ang+a)&&rr>0.40+0.035*Math.sin(2*ang+a);(on)?(v.shift||35.chr):32.chr}.join.rstrip};raise"capacity"unless(v.empty?);"n=0x%02x;eval$s=%%w"%k+33.chr+10.chr+rows.join(10.chr)+10.chr+33.chr+"*"+34.chr*2+10.chr};'
-payload = emitter + 'if(ARGV[0]=="--shader");r=e.call(n);require"zlib";b=r.bytes;b+=[0]*(-b.size%4);w=b.each_slice(4).map{|x|"0x%08xu"%x.reverse.inject{_1<<8|_2}};g=Zlib::Inflate.inflate(["' + hex + '"].pack("H*"));ls=[0];r.bytes.each_with_index{|c,i|ls<<i+1if(c==10)};g=g.gsub("@NL@",ls.size.to_s).sub("@LINES@",ls.join(",")).sub("@LEN@",r.bytesize.to_s).sub("@COUNT@",w.size.to_s).sub("@WORDS@",w.join(",")).sub("@PHASE@",n.to_s).sub("@FONT@","' + FONT_HEX.scan(/.{8}/).map { '0x'+_1+'u' }.join(',') + '");print(g);else;print(e.call((n+1)%24));end;#'
+payload = emitter + 'if(ARGV[0]=="--shader");r=e.call(n);require"zlib";b=r.bytes;b+=[0]*(-b.size%4);w=b.each_slice(4).map{|x|"0x%08xu"%x.reverse.inject{_1<<8|_2}};z=w.each_slice(256).to_a;d=z.each_with_index.map{|q,j|"const"+32.chr+"uint"+32.chr+"SRC"+j.to_s+"["+q.size.to_s+"]=uint[]("+q.join(44.chr)+");"}.join;d+="uint"+32.chr+"W(int"+32.chr+"i){";z.each_with_index{|q,j|d+="if(i<"+((j+1)*256).to_s+")return"+32.chr+"SRC"+j.to_s+"[clamp(i-"+(j*256).to_s+",0,"+(q.size-1).to_s+")];"};d+="return"+32.chr+"0u;}";g=Zlib::Inflate.inflate(["' + hex + '"].pack("H*"));ls=[0];r.bytes.each_with_index{|c,i|ls<<i+1if(c==10)};g=g.gsub("@NL@",ls.size.to_s).sub("@LINES@",ls.join(",")).sub("@LEN@",r.bytesize.to_s).sub("@SOURCE@",d).sub("@PHASE@",n.to_s).sub("@FONT@","' + FONT_HEX.scan(/.{8}/).map { '0x'+_1+'u' }.join(',') + '");print(g);else;print(e.call((n+1)%24));end;#'
 raise 'unsafe whitespace or delimiter' if payload.match?(/[\s!\\]/)
+raise 'unexpected comment marker' unless payload.count('#') == 1 && payload.end_with?('#')
 # Bootstrap generation 0 using exactly the emitter embedded in every child.
 scope = binding
 scope.local_variable_set(:k, 0)

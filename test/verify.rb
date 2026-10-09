@@ -26,7 +26,10 @@ class OuroborosTest < Minitest::Test
     assert status.success?
     refute_match(/@[A-Z]+@/,fragment)
     [fragment, Glslkit::Minifier.minify(fragment)].each do |code|
-      words=code[/const uint SRC\[\d+\]=uint\[\]\((.*?)\);/m,1].scan(/0x(\h{8})u/).flatten.map { _1.to_i(16) }
+      blocks=code.scan(/const uint SRC\d+\[(\d+)\]=uint\[\]\((.*?)\);/m)
+      refute_empty blocks
+      assert blocks.all? { |size,_| size.to_i<=256 }
+      words=blocks.flat_map { |_,data| data.scan(/0x(\h{8})u/).flatten.map { _1.to_i(16) } }
       assert_equal source, words.pack('V*').byteslice(0, source.bytesize)
     end
     assert_equal File.binread(File.join(ROOT,'app/shaders/ouroboros.frag')), fragment.b

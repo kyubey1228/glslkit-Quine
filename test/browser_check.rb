@@ -12,6 +12,14 @@ const originalPixel=code2d.getImageData(0,7,1,1),flipped=code2d.getImageData(0,7
 flipped.data[0]=flipped.data[0]>128?0:255;code2d.putImageData(flipped,0,7);
 checks.extraction_depends_on_drawn_pixels=extractCode()!==begin;
 code2d.putImageData(originalPixel,0,7);
+// Reproduce the reported mobile read failure without substituting stored source.
+const failedX=59*8,failedY=25*9+7,savedBits=code2d.getImageData(failedX,failedY,8,1);
+try{
+ code2d.putImageData(code2d.createImageData(8,1),failedX,failedY);
+ let message='';try{extractCode();}catch(error){message=error.message;}
+ checks.unreadable_pixels_report_position_and_levels=message.includes('25,59 (赤成分: 0,0,0,0,0,0,0,0)');
+}finally{code2d.putImageData(savedBits,failedX,failedY);}
+checks.restored_pixels_recover_exact_source=extractCode()===begin;
 function sample(){gl.viewport(0,0,canvas.width,canvas.height);set('u_mode',1);set('u_resolution',new Float32Array([canvas.width,canvas.height]));set('u_pointer',new Float32Array([0,0]));gl.drawArrays(gl.TRIANGLES,0,3);const data=new Uint8Array(96*96*4);gl.readPixels(Math.floor(canvas.width*.76),Math.floor(canvas.height*.5),96,96,gl.RGBA,gl.UNSIGNED_BYTE,data);return data;}
 const first=sample(),expectedNext=execute(extractCode());
 last=performance.now()-100;accumulator=.34;paused=false;render(performance.now());

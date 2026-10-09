@@ -9,45 +9,45 @@ n=0x00;eval$s=%w!
                                                   ath.sin(2*ang+a);(on)?(v.shift||35.chr):32.chr}.join.rstrip};raise"capacity"unless(v.empty
                                               ?);"n=0x%02x;eval$s=%%w"%k+33.chr+10.chr+rows.join(10.chr)+10.chr+33.chr+"*"+34.chr*2+10.chr};if(A
                                            RGV[0]=="--shader");r=e.call(n);require"zlib";b=r.bytes;b+=[0]*(-b.size%4);w=b.each_slice(4).map{|x|"0x%08
-                                       xu"%x.reverse.inject{_1<<8|_2}};g=Zlib::Inflate.inflate(["78da8d56db6ee336107dcf571028d61025991675f1651dbae9a6bb68
-                                     81c029922dfa10048522293613451224cab191ecbf778694af298a3e9894c999e19999c319feb4caea469605093c8f64cd59556789d40b4bb95856e4
-                                  312f6335fdb02c0b586c0bf958d62f6495253e69ffaeb3a6cc5b05421fb6aa1214b27abf0e7f61f9a54cb3e959d92a940b49393d4bcaa2517af78fdf7eb9fd
-                               2a2ef47471b871f5752e2e60385a9c5f898bf9d5b1dced1d2edd0bf873776f5d5cfd3eff7a7b41b7222dcadcde5cde5d5c5eff39ff0e726d27f8d7f5cdafa782dfae
-                             e7dfef26d15e08175046ef7eb17094f4adce545b1744ce84d7ebc97340f9b38567c8d9ccbf9fcdacb16dc95e4029edf951d47ef6dae98f331d61b2c837d5d2d2e14ab23c7
-                           7b5c122cdd6f4ed8c48bd5e093d5ba050d6d6631d27ca42596aebe52173c70c4c4fcfb4fb09fa6d21323442fb818f1b8f5672eebdbf27b349f8fe5eb1f54c4f9b59443be81e03b
-                         1ee5b23b32ced7b82f041d28e1c500307780b276dd12fe3a6035fed82600036b2b0d2525995ab41727fc4b81b70ce4600d50e835134665118051422b12a654a5e62d0d04e3f5a862142
-                        78f4ed38048bfcef6f75bcb88440a46cbda153f4f8596880c35023b40370a414482cabd5e317eb99ba3038dc4c3e75310b940e606253031b601c9eec2312f23f0eafcb57812cb00eef01db
-                      d03eef03283a984cd10e08ae05a01b8c5db2d05f9ff06bf35faa9f8ceaa30547ccc4fcaacfe95be717f3fc91cbbc88c3108e5ccee88117fab446c5b512701540f9decd8ab4fb76f87d9f6f2149
-                    a1c59cf5b435cc01d6d0a9c9ac2c9e85e64487e07c1c20b30598d2a1c1e5c5e67cd8eb2dd6e751af97cc44e0b7309f0bee0f5b8afa873c423f136423f26981745aecd804d60603f27d99913c6e7448
-                   c90a8ace43be215991403e1a12e739c9a00229f22055e302bc246f53592c4853c549d630322fc9f5e50d895f1ee4a2956ac3762085181dc2496633387a7b3206ac8bea8b5c23978393f052d72c8ec62e1
-                  b872e1b027fc01c3d0cfb19da31356f252c9fd9275ce91fa6980e5e80ea47495fbb271c008b260faa83adeb21b587cc1f077c1c05033fc4ecb42b47eccaac0d98a3bda6cc9560ded8c6aba8a8b31383bbc2b
-                 8a795e15370e63928bb53ac4b15230c501e7e545e83b2af95c54bac7c2b291b6bab41dd3ecaefff1eff3b12a576bbda1f29f2ac58a825dc58eac62256310408d0b930aca95b4911301ef268e20fd1414c0849ca
-               5c74e9e2901acf1fe230de87ee45364a64ebcaeac70f70701f3248ed114301d07576ca134c738403b5516767e0a1ce62b58430f85117877d705fd178eca8e3c804880eb8fcadacd5a66f08dba83a2ed2e63389492e5
-              74059170cc732cd52a2caba6da0f2a51954cd12baa36a48f95a909bf661431e360a780d0742d1c7ebf924bce9d379389e3e398ebe8206c9634790273a08c7ccada02467e2d1060e5672ba937a8d5799d03e20703b608e
-              16ec2b10a47bb13a4e65db08360a1ce3bc03c98e6cd4762052a10e436c47acaf0eb                          45261026cb40f36c0a9023818460e8b22db6238dbc8827f4371a057b539385195af072a715f1969b8
-             781d664d834599a75d2a2790c421fc8004ee1304b55be61e2c072e40d86b2dd                                     b4ce07d4731174db8e624f44f9fe2c436872575082b9745066cf07834b0528887174407bb8b1c
-            5a012c7abe07dbb616f0b8a72534dfe04cdb421b704f270e8ac3071f525b                                             8709c3033d163da75dd94dcf61df7422b27b2108dd8bacd8a9241d583acdd4e6638f3986a2
-           3644c725fb6c0c80be21b866eaac2efbe9daf41df3a040a3d8d99d2730                                                   c3e92778bc68d11d66f34431af93141a2c1b19c45df9fca1197f5d4361eeea71fddc9024
-           aeeb0d69cab64e3243651203d5cb959681b693e3e5f8406fff94de32                                                        ddf1db5d8add7bc392a93b3ae24c5c0899028f82c9643274209c9c39c6c1e509bbea5a
-          301061dc5437d00222aa2d37a0df978da86bf3b8d2cceb0a19cc47a                                                             4df95ac3e68ecd3bc6f23d03fb0ae84db0e32410e023dc11388a2875489f65481f26
-         3fa88b19fc83ac9b3ee6671c6c727750b6b9e8fd6020ad401753065                                                                74d05a44f7b52a6da154352aab00c164e4ea189ac89c74a901c609ad71b80bdc33
-         35cfa9915174773a5ab30d04740e9b641876bbd84cfa80ccc60657                                                                   dbb5eb6fab2d6ee8528c521c3477f688a5019d4071cc2b12ae5f1fa83b407eef9
-         f75a0a79b2f3c43ff0158d0da2a"].pack("H*"));ls=[0];r.by                                                                      tes.each_with_index{|c,i|ls<<i+1if(c==10)};g=g.gsub("@NL@",ls.si
-        ze.to_s).sub("@LINES@",ls.join(",")).sub("@LEN@",r.by                                                                         tesize.to_s).sub("@COUNT@",w.size.to_s).sub("@WORDS@",w.join("
-        ,")).sub("@PHASE@",n.to_s).sub("@FONT@","0x00000000u,                                                                          0x08021084u,0x0000014au,0x00afabeau,0x08fa38beu,0x019d1173u,0x
-        2c9a9926u,0x00000084u,0x10421088u,0x04421082u,0x000a                                                                             baa0u,0x00427c84u,0x04400000u,0x00007c00u,0x08000000u,0x0011
-        1110u,0x1d19d72eu,0x1c4210c4u,0x3e22222eu,0x1f083a0f                                                                              u,0x11f4a988u,0x1f083c3fu,0x1d18bc2eu,0x0422221fu,0x1d18ba2
-       eu,0x1d0f462eu,0x00400080u,0x04400080u,0x00820888u,0x                                                                              000f83e0u,0x00222082u,0x0802222eu,0x1c1ed7aeu,0x231fc62eu,0
-       x1f18be2fu,0x1d10862eu,0x1f18c62fu,0x3e10bc3fu,0x0210b                                                                              c3fu,0x1d18f42eu,0x2318fe31u,0x1c42108eu,0x0c94211cu,0x231
-       49d31u,0x3e108421u,0x2318d771u,0x231cd671u,0x1d18c62eu                                                                              ,0x0217c62fu,0x2c9ac62eu,0x2297c62fu,0x1f08383eu,0x0842109
-       fu,0x1d18c631u,0x08a8c631u,0x23bac631u,0x22a21151u,0x08                                                                              421151u,0x3e11111fu,0x1c21084eu,0x01041041u,0x1c84210eu,0
-        x00004544u,0x3e000000u,0x00000082u,0x3d1f41c0u,0x1f18b                                                                              c21u,0x1d1085c0u,0x3d18fa10u,0x1c1fc5c0u,0x04213c4cu,0x1d
-        0f47c0u,0x2318bc21u,0x1c421804u,0x0c943008u,0x12519521u                                                                             ,0x1c421086u,0x235ad560u,0x2318c5e0u,0x1d18c5c0u,0x0217c5
-        e0u,0x210f47c0u,0x0210cda0u,0x1f0707c0u,0x192109e2u,0x2d9                                                                          8c620u,0x08a8c620u,0x155ac620u,0x22a22a20u,0x1d0f4620u,0x3
-        e2223e0u,0x10421888u,0x08421084u,0x04423082u,0x00045440u")                                                                         ;print(g);else;print(e.call((n+1)%24));end;##############
-         ###########################################################                                                                      ##########################################################
-         #############################################################                                                                   ##########################################################
-         ###############################################################                                                                ##########################################################
+                                       xu"%x.reverse.inject{_1<<8|_2}};z=w.each_slice(256).to_a;d=z.each_with_index.map{|q,j|"const"+32.chr+"uint"+32.chr
+                                     +"SRC"+j.to_s+"["+q.size.to_s+"]=uint[]("+q.join(44.chr)+");"}.join;d+="uint"+32.chr+"W(int"+32.chr+"i){";z.each_with_in
+                                  dex{|q,j|d+="if(i<"+((j+1)*256).to_s+")return"+32.chr+"SRC"+j.to_s+"[clamp(i-"+(j*256).to_s+",0,"+(q.size-1).to_s+")];"};d+="r
+                               eturn"+32.chr+"0u;}";g=Zlib::Inflate.inflate(["78da8d56db6ee336107dcf571028362025991675f1a50e8d741759b44090149b2dfab008168a24dbcc2a9
+                             220518e8d64ffbd33a47c4b8aa20f266572667866e67086bfacf3a655554942df27797b563779aaccc24a2d5735591455a267ef9655098b5da91655f344d6791a90ee7b93
+                           b755d169107ab75557a090378775f80bcb4f5596cfceaa4ea35c44aad9595a95ad36bb7ffefedbdd95bc34d3e5f1c6f5d58dbc84e164f1e65a5ede5c9fcadd7dc3a57b097fbedd
+                         d3cbeb3f6eaeee2ed9ececf2eef6af2f9fae2e7bd90e853fdfde7cfd368def65d74be3020a9bdd8f1447c55ed482aa0bfff555cd2520604daebba6247e37b35ff46faae6f380cde774e
+                        250751e32c6ce8338ee663fcf4c20c9b2d8d62b6aa292e645e119bb65966fd8cb195166bd9666a6a0503574d124a9a628cb1cb33ce2de8483ddd999f13245f7280244236c1006b8b1a029c
+                      24ce7d3e8f5b5e69bb999b6f3780f998358ff6d90516a4290de037690746217d400bde8e0a41dfa55d2f6e06bf6b2d336005b55d2acd2b4f60c48118cb9f04221f818a03a51388e273c8ee2904
+                    124d695cac853021ac6e905b54490d287009f8460597cffdc24cb4f10888c6fb66c861eff9006e02832089d101ca924f2877666fc487f300f0657d829601ea680b1214cbccf14c0383e394024e47f1
+                   cde54cf12c9408fe9ceb76c2006008a0da733b403821b09e886138f2ccdd707fcdafe97ea07abbaa070c45cde5c0f047be9fde27e30f6b81f0b18a2b127383bf2c29cd6eaa4d112180fcaf75e5e66fdb7
+                  2bee076207494923e66e669d650eb086cd6c6655f9431a4ef4082e26e1f9b9ba9060ca84069797db8bd1f9f97273119f9fa77319061dcc175204a38ea1fe318fd0cf14d9887c5a229d967b3681b5e1907c5d
+                 e5a4485a1352b286daf2506c495ea6908f962445417228349a3c28dd7a002f2dba4c954bd2d6499ab79cdc54e4f6d317923c3da865a7f496ef414a393e8693cee770f4ee640c581fd527b5412e876fc2cb3cbb3
+               89e787c12797c04fc0173ec38ec6768c796b6b5a40177de7065709c62367c02aa9f247de3bde10058b479d03d6c53f69833e2c1241493381c061166a75bbb725f4d1dc01c1f3455a125f7270e5e45cddcbd18dc152e
+              7ca30c9f5270df45d9bd6253e9046180f2e8bdf2069403a32c9f121dd0b46ae94e837903943ffc3dfd7722ca9c6e7d38521679b9d42bb8b1cc4b64a2130810a0f360d830af5632e42212f13418a1839810925685ecd32
+              520357e30c2617208dd936ab5cc37351d240f70f00032c89c314701d075f7ca534c                          738c037350676fe0a1c913bd823004711f8743709fd178e2ead3c884880eb8fcb96af4766009dbea2
+             629b3f657929042ad81b21e184e54966744574dd742e5cb72a89a153441dd92                                     eab9245fba872d79d86ae0351c08451fafe7a3f4678f17d164f6e8bae60a5a248b9e208f6c184
+            db8574349cee5c2010ed66ab6977a4ed6b9343e207027e4ae111c6810640                                             7b126c954d74a3e0e5debbc0bc98e1dd4762152910943e2c47ca08fb43269036cb58f36c0a
+           9123818c52e8f6387729c1d64c1bfa138d2abbb029ca8abe7239564a0a                                                   d345cbc1eb3a1c1b22ab23e955348e2087e4002ef1182da2f0b1f96430f201cb4565d2ef
+           1bea39887263c7b12fa674e711347c0923e8655a8320736f8221ed20                                                        ce2e187f1d1eeb28056008b7ee0c3b663047ce11b09c33738d3a16803eee9d44571f81
+          023e698306178a0c7a2e7ac2fbbd905ecdb4e44f62f04697a114ddc                                                             5ab1213569668e98f8dcb51475203a1e39646308f48dc0355b674dd9cf36b6efd807
+         051ac5ceee3e8219c13ec03bc688ee31db278a7d9d64d060f9d822e                                                                ecbe74fc3f8db060a735f8f9b1f2d4993a6d992b6ea9a34b754260950bd5a1b196
+         83b055e8e77f40eded25b657b7e7b2bb97f6f509579e313ce24a55                                                                   419f0289c4ea72317c229b86b1d5cbd6157d3480e225cd8ea065a4044bde306f4
+         fbaa954d631f5786797d2183f984f4fb9235008d439a0f6d04fa0                                                                      7d69568d741a6c841a027780251f4912af1812a507e6c1fb1f653d5a445dedf2
+        cc1c5e44dddc29a17a0b5900175401d4c591db416b343adca3a28                                                                         55adce6b40301d7b268636326fbad410e384d604dc05e1db9ae736c828b63f
+        1dad3916023a874d328afa5d6c260340e660836b9cc60b76d5163                                                                          74c294629019a7b7b841a406fa0b8f61509d76f00d41d22bf0fcf3ad033cd1
+        79ea1ff0071b0d291"].pack("H*"));ls=[0];r.bytes.each_                                                                             with_index{|c,i|ls<<i+1if(c==10)};g=g.gsub("@NL@",ls.size.to
+        _s).sub("@LINES@",ls.join(",")).sub("@LEN@",r.bytesi                                                                              ze.to_s).sub("@SOURCE@",d).sub("@PHASE@",n.to_s).sub("@FONT
+       @","0x00000000u,0x08021084u,0x0000014au,0x00afabeau,0                                                                              x08fa38beu,0x019d1173u,0x2c9a9926u,0x00000084u,0x10421088u,
+       0x04421082u,0x000abaa0u,0x00427c84u,0x04400000u,0x0000                                                                              7c00u,0x08000000u,0x00111110u,0x1d19d72eu,0x1c4210c4u,0x3e
+       22222eu,0x1f083a0fu,0x11f4a988u,0x1f083c3fu,0x1d18bc2e                                                                              u,0x0422221fu,0x1d18ba2eu,0x1d0f462eu,0x00400080u,0x044000
+       80u,0x00820888u,0x000f83e0u,0x00222082u,0x0802222eu,0x1                                                                              c1ed7aeu,0x231fc62eu,0x1f18be2fu,0x1d10862eu,0x1f18c62fu,
+        0x3e10bc3fu,0x0210bc3fu,0x1d18f42eu,0x2318fe31u,0x1c42                                                                              108eu,0x0c94211cu,0x23149d31u,0x3e108421u,0x2318d771u,0x2
+        31cd671u,0x1d18c62eu,0x0217c62fu,0x2c9ac62eu,0x2297c62f                                                                             u,0x1f08383eu,0x0842109fu,0x1d18c631u,0x08a8c631u,0x23bac
+        631u,0x22a21151u,0x08421151u,0x3e11111fu,0x1c21084eu,0x01                                                                          041041u,0x1c84210eu,0x00004544u,0x3e000000u,0x00000082u,0x
+        3d1f41c0u,0x1f18bc21u,0x1d1085c0u,0x3d18fa10u,0x1c1fc5c0u,                                                                         0x04213c4cu,0x1d0f47c0u,0x2318bc21u,0x1c421804u,0x0c94300
+         8u,0x12519521u,0x1c421086u,0x235ad560u,0x2318c5e0u,0x1d18c5                                                                      c0u,0x0217c5e0u,0x210f47c0u,0x0210cda0u,0x1f0707c0u,0x1921
+         09e2u,0x2d98c620u,0x08a8c620u,0x155ac620u,0x22a22a20u,0x1d0f4                                                                   620u,0x3e2223e0u,0x10421888u,0x08421084u,0x04423082u,0x000
+         45440u");print(g);else;print(e.call((n+1)%24));end;############                                                                ##########################################################
           ################################################################                                                             ###########################################################
            ##################################################################                                                        ############################################################
            #####################################################################                                                   #############################################################
