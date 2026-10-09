@@ -57,6 +57,24 @@ function showStatus(){ $('generation').textContent=String(generation+1).padStart
 function checkCurrent(){const recovered=extractCode();if(recovered!==source)throw new Error('描画コードがRubyと一致しません');return recovered;}
 drawCode();checkCurrent();
 $('save').onclick=()=>download(checkCurrent(),'ouroboros-'+String(generation).padStart(2,'0')+'.rb');
+function copyWithSelection(text){
+ const field=document.createElement('textarea'),focused=document.activeElement;
+ field.value=text;field.readOnly=true;field.style.cssText='position:fixed;opacity:0;left:0;top:0';
+ $('source').append(field);
+ try{field.focus();field.select();if(!document.execCommand('copy'))throw new Error('copy failed');}
+ finally{field.remove();focused?.focus();}
+}
+$('code-copy').disabled=false;
+$('code-copy').onclick=async()=>{
+ const button=$('code-copy');button.disabled=true;$('copy-status').textContent='';
+ try{
+  const text=checkCurrent(),phase=generation+1;
+  if(navigator.clipboard?.writeText){try{await navigator.clipboard.writeText(text);}catch{copyWithSelection(text);}}
+  else{copyWithSelection(text);}
+  $('copy-status').textContent=String(phase).padStart(2,'0')+'世代のコードをコピーしました';
+ }catch{ $('copy-status').textContent='コピーできませんでした。もう一度お試しください。'; }
+ finally{button.disabled=false;}
+};
 function render(now){const dt=Math.min((now-last)/1000,.1);last=now;if(!paused&&ready&&!busy){accumulator+=dt*speed;if(accumulator>=.35){accumulator=0;advance();}}pointer.forEach((v,i)=>pointer[i]+=(target[i]-v)*.035);gl.viewport(0,0,canvas.width,canvas.height);set('u_mode',1);set('u_resolution',new Float32Array([canvas.width,canvas.height]));set('u_pointer',new Float32Array(pointer));gl.drawArrays(gl.TRIANGLES,0,3);raf=requestAnimationFrame(render);}
 raf=requestAnimationFrame(render);
 $('status').textContent='Ruby処理系を読み込んでいます…';

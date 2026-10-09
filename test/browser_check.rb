@@ -28,7 +28,25 @@ checks.glslkit_runs_in_browser=vm.eval('Glslkit::VERSION').toString().length>0;
 paused=false;pauseLabel();$('pause').click();checks.pause=paused;$('pause').click();checks.resume=!paused;
 $('speed').value='1.5';$('speed').dispatchEvent(new Event('input'));checks.speed=speed===1.5;
 $('source-open').click();checks.source_dialog=$('source').open;const logicalWidth=sourceCanvas.width;$('code-zoom').click();checks.zoom_preserves_extraction=sourceCanvas.width===logicalWidth&&extractCode()===source;$('code-zoom').click();$('source').close();
-paused=true;pauseLabel();checks.no_gl_error=gl.getError()===gl.NO_ERROR;
+paused=true;pauseLabel();
+$('source').showModal();
+const clipboardDescriptor=Object.getOwnPropertyDescriptor(navigator,'clipboard'),originalExec=document.execCommand;
+let copied;
+try{
+ Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>{copied=text;}}});
+ await $('code-copy').onclick();
+ checks.copy_preserves_all_source_bytes=copied===extractCode()&&$('copy-status').textContent.includes('コピーしました');
+ navigator.clipboard.writeText=async()=>{throw new Error('clipboard unavailable');};
+ document.execCommand=command=>{const field=$('source').querySelector('textarea');copied=field?.value;return command==='copy'&&field===document.activeElement&&field.selectionStart===0&&field.selectionEnd===copied.length;};
+ copied=null;await $('code-copy').onclick();
+ checks.copy_fallback_preserves_source=copied===extractCode()&&!$('source').querySelector('textarea')&&!$('code-copy').disabled;
+ document.execCommand=()=>false;await $('code-copy').onclick();
+ checks.copy_failure_is_reported=$('copy-status').textContent.includes('コピーできません')&&!$('code-copy').disabled;
+}finally{
+ if(clipboardDescriptor)Object.defineProperty(navigator,'clipboard',clipboardDescriptor);else delete navigator.clipboard;
+ document.execCommand=originalExec;$('source').close();
+}
+checks.no_gl_error=gl.getError()===gl.NO_ERROR;
 const report=document.createElement('pre');report.id='browser-check';report.style.display='none';report.textContent=JSON.stringify(checks);document.body.append(report);
 JS
 html=html.sub('ready=true;showStatus();') { check }

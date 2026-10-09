@@ -3,3 +3,5 @@
 .code-scroll{overflow:auto;background:#070d0d;padding:15px}#code-canvas{display:block;image-rendering:pixelated;max-width:none}.controls{width:435px}.buttons{gap:5px}.buttons button{padding:9px 8px}.buttons button:disabled{opacity:.4;cursor:wait}#generation{color:var(--gold);font:12px monospace;letter-spacing:.2em}@media(max-width:700px){.controls{width:100%}.buttons button{padding:9px 5px;font-size:9px}}
 
 #code-canvas{width:100%;height:auto}#code-zoom{font-size:11px;color:var(--gold);padding:8px 0 14px}
+
+#code-copy{border:1px solid var(--line);padding:8px 12px;margin-right:12px;font-size:11px;color:var(--gold)}#code-copy:disabled{opacity:.4}#copy-status{font-size:11px;color:var(--muted);margin-right:16px}

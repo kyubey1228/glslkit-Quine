@@ -14,5 +14,8 @@
   "speed": true,
   "source_dialog": true,
   "zoom_preserves_extraction": true,
+  "copy_preserves_all_source_bytes": true,
+  "copy_fallback_preserves_source": true,
+  "copy_failure_is_reported": true,
   "no_gl_error": true
 }
