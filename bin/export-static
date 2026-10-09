@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+require 'tmpdir'
+require 'rbconfig'
+root=File.expand_path('..',__dir__)
+abort 'build failed' unless system(RbConfig.ruby,File.join(root,'build.rb'),out:$stderr)
+# Export outside Git: Deploy Now excludes ignored files even when --dir is used.
+destination=Dir.mktmpdir('glslkit-quine-static-')
+FileUtils.mkdir_p(File.join(destination,'public'))
+FileUtils.cp(File.join(root,'index.html'),File.join(destination,'index.html'))
+FileUtils.cp(File.join(root,'public/frame-viewer.html'),File.join(destination,'public/frame-viewer.html'))
+puts destination

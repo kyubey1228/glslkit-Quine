@@ -2,6 +2,8 @@
 
 **自分を描く、自分に還る。** 描かれたRubyを実行すると次の姿を描くRubyが生まれ、24世代で最初へ戻る、動く周期Quineです。
 
+**[公開作品を開く](https://glslkit-quine.lolipop-now.app/)** · [frame.fragビューア](https://glslkit-quine.lolipop-now.app/public/frame-viewer.html)
+
 ![金色と青緑のコードが光の輪を編むOUROBOROSの動作画面](docs/images/artwork.png)
 
 48本の光の糸に、その世代のRubyコードが流れます。形と色はコードの世代に従って変化し、ポインターにも反応します。
@@ -30,6 +32,27 @@ bundle exec ruby bin/rails server -b 127.0.0.1 -p 3100
 `bin/setup` はRubyとnpmの依存をインストールし、Quine・シェーダー・ブラウザ用ランタイム・単体HTMLを生成します。glslkitはGemfile / Gemfile.lockで使用コミットを固定しています。
 
 生成された `index.html` はブラウザで直接開くこともできます。Ruby処理系とglslkitを内包するため約42MBありますが、生成後はCDN・サーバー・ネット接続を必要としません。
+
+## ロリポップ！デプロイ nowで公開する
+
+生成した静的版を公開できます。ブラウザ内でRubyとglslkitを実行するため、公開先にRailsサーバーは必要ありません。
+
+[公式の静的サイト対応](https://deploy.lolipop.jp/docs/frameworks/static)を利用し、`index.html` とビューアだけをアップロードします。CLIはGitで無視された生成ファイルを除外するため、公開用フォルダをGitの外へ書き出します。
+
+```sh
+lolipop login
+deploy_dir="$(bundle exec ruby bin/export-static)"
+lolipop deploy --dir "$deploy_dir" --name glslkit-quine --framework static
+```
+
+初回公開後の更新は、作成されたプロジェクトIDを指定します。
+
+```sh
+deploy_dir="$(bundle exec ruby bin/export-static)"
+lolipop deploy --dir "$deploy_dir" --project 01M4FPMKHG60P3WCC16MK61478
+```
+
+この作品の公開先ではCLIから静的成果物をアップロードしています。GitHubへのpushだけでは自動公開されません。
 
 ## 操作
 
