@@ -1,6 +1,8 @@
 {
   "code_sheet_uses_separate_program": true,
   "visible_pixels_equal_source": true,
+  "shader_texture_drives_drawn_source": true,
+  "shader_texture_restores_exact_source": true,
   "extraction_depends_on_drawn_pixels": true,
   "unreadable_pixels_report_position_and_levels": true,
   "failed_read_compares_gpu_data": true,
@@ -22,5 +24,6 @@
   "copy_preserves_all_source_bytes": true,
   "copy_fallback_preserves_source": true,
   "copy_failure_is_reported": true,
-  "no_gl_error": true
+  "no_gl_error": true,
+  "frame_viewer_uses_shader_texture": true
 }

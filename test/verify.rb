@@ -49,7 +49,7 @@ class OuroborosTest < Minitest::Test
     refute_match(/__(?:VERTEX|MANIFEST)__/,session.response.body)
     manifest=JSON.parse(html[/<script[^>]*id="glsl-manifest"[^>]*>(.*?)<\/script>/m,1])
     uniforms=manifest.fetch('programs').fetch('ouroboros').fetch('uniforms')
-    assert_equal %w[u_mode u_pointer u_resolution], uniforms.map { _1.fetch('name') }.sort
+    assert_equal %w[u_data u_mode u_pointer u_resolution], uniforms.map { _1.fetch('name') }.sort
     assert_equal 'uniform2fv', uniforms.find { _1['name']=='u_resolution' }.fetch('setter')
     session.get('/ouroboros.rb')
     assert_equal 200, session.response.status

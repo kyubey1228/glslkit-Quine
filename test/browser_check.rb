@@ -8,6 +8,12 @@ const checks={};
 const begin=source;
 checks.code_sheet_uses_separate_program=program!==codeProgram&&gl.isProgram(codeProgram);
 checks.visible_pixels_equal_source=extractCode()===begin;
+// Alter the uploaded shader data: the rendered code must follow the texture.
+const firstByte=new TextEncoder().encode(begin)[0];
+function replaceFirstByte(value){gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,shaderData.texture);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,1,1,gl.RED_INTEGER,gl.UNSIGNED_INT,new Uint32Array([value]));gl.activeTexture(gl.TEXTURE0);drawCode();}
+try{replaceFirstByte(firstByte^1);checks.shader_texture_drives_drawn_source=extractCode()===String.fromCharCode(firstByte^1)+begin.slice(1);}
+finally{replaceFirstByte(firstByte);}
+checks.shader_texture_restores_exact_source=extractCode()===begin;
 // Prove the next source is read from visible pixels: flipping one bit changes extraction.
 const originalPixel=code2d.getImageData(0,7,1,1),flipped=code2d.getImageData(0,7,1,1);
 flipped.data[0]=flipped.data[0]>128?0:255;code2d.putImageData(flipped,0,7);
@@ -59,7 +65,15 @@ try{
  document.execCommand=originalExec;$('source').close();
 }
 checks.no_gl_error=gl.getError()===gl.NO_ERROR;
+const viewer=document.createElement('iframe');viewer.hidden=true;
+try{
+ const loaded=new Promise(resolve=>viewer.onload=resolve);viewer.srcdoc=__FRAME_VIEWER_HTML__;document.body.append(viewer);await loaded;
+ viewer.contentWindow.loadShader(fragment,'generated.frag');
+ const viewGl=viewer.contentWindow.eval('gl');
+ checks.frame_viewer_uses_shader_texture=viewer.contentDocument.getElementById('status').textContent.includes('を表示しています')&&viewGl.isTexture(viewer.contentWindow.eval('shaderData.texture'))&&viewGl.getError()===viewGl.NO_ERROR;
+}finally{viewer.remove();}
 const report=document.createElement('pre');report.id='browser-check';report.style.display='none';report.textContent=JSON.stringify(checks);document.body.append(report);
 JS
 html=html.sub('ready=true;showStatus();') { check }
+html=html.sub('__FRAME_VIEWER_HTML__') { JSON.generate(File.read(File.join(root,'public/frame-viewer.html'))).gsub('</','<\\/') }
 File.write(File.join(root,'tmp/browser-check.html'),html)

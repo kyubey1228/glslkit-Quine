@@ -10,7 +10,7 @@ function download(text,name){const url=URL.createObjectURL(new Blob([text],{type
 try {
 const canvas=$('art'),gl=canvas.getContext('webgl2',{alpha:false,antialias:false});
 if(!gl)throw new Error('WebGL2対応ブラウザで開いてください。');
-let program,codeProgram,uniforms,codeUniforms,lastCodePixels,fragment=$('ouroboros-frag').textContent,rows=82;
+let program,codeProgram,shaderData,uniforms,codeUniforms,lastCodePixels,fragment=$('ouroboros-frag').textContent,rows=82;
 const vertex=$('ouroboros-vert').textContent;
 function compile(type,text){const shader=gl.createShader(type);gl.shaderSource(shader,text);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){const log=gl.getShaderInfoLog(shader);gl.deleteShader(shader);throw new Error(log);}return shader;}
 function link(frag){
@@ -23,10 +23,11 @@ function setters(target,manifest){
  const result={};for(const u of manifest.programs.ouroboros.uniforms){const loc=gl.getUniformLocation(target,u.name);result[u.name]=v=>gl[u.setter](loc,typeof v==='number'?[v]:v);}return result;
 }
 function install(frag,manifest){
- const next=link(frag);let nextCode;
- try{nextCode=link(frag.replace(/^(#version[^\n]*\n)/,'$1#define OUROBOROS_CODE_ONLY 1\n'));}
- catch(error){gl.deleteProgram(next);throw error;}
+ const prepared=window.OuroborosShaderData.prepare(gl,frag);let next,nextCode;
+ try{next=link(prepared.fragment);nextCode=link(prepared.fragment.replace(/^(#version[^\n]*\n)/,'$1#define OUROBOROS_CODE_ONLY 1\n'));}
+ catch(error){if(next)gl.deleteProgram(next);prepared.dispose();throw error;}
  if(program)gl.deleteProgram(program);if(codeProgram)gl.deleteProgram(codeProgram);
+ if(shaderData)shaderData.dispose();shaderData=prepared;shaderData.bind(next);shaderData.bind(nextCode);
  program=next;codeProgram=nextCode;fragment=frag;gl.useProgram(program);uniforms=setters(program,manifest);codeUniforms=setters(codeProgram,manifest);
  rows=Number(frag.match(/const int NL\s*=\s*(\d+)/)[1])-1;
 }

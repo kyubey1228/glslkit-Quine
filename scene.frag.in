@@ -8,15 +8,25 @@ out vec4 o;
 const int PHASE=@PHASE@;
 const int LEN=@LEN@;
 const int NL=@NL@;
+#ifdef OUROBOROS_TEXTURE_DATA
+uniform highp usampler2D u_data;
+uint T(int i){return texelFetch(u_data,ivec2(i&255,i>>8),0).r;}
+int L(int i){return int(T(LEN+i));}
+uint F(int i){return T(LEN+NL+i);}
+uint B(int i){if(i<0||i>=LEN)return 0u;return T(i);}
+#else
 const int LS[@NL@]=int[](@LINES@);
 @SOURCE@
 const uint FONT[95]=uint[](@FONT@);
+int L(int i){return LS[i];}
+uint F(int i){return FONT[i];}
 uint B(int i){if(i<0||i>=LEN)return 0u;return(W(i>>2)>>(8*(i&3)))&255u;}
+#endif
 float glyph(vec2 cell,int index){
  ivec2 p=ivec2(floor(fract(cell)*vec2(6.,8.)));
  int c=int(B(index))-32;
  if(c<0||c>94||p.x>4||p.y>5)return 0.;
- return float((FONT[c]>>(p.y*5+p.x))&1u);
+ return float((F(c)>>(p.y*5+p.x))&1u);
 }
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 void main(){
@@ -26,10 +36,10 @@ void main(){
   ivec2 p=ivec2(gl_FragCoord.xy);int row=(int(u_resolution.y)-1-p.y)/9;
   int x=p.x/8, gx=p.x%8, gy=(int(u_resolution.y)-1-p.y)%9;
   if(row>=NL-1){o=vec4(.027,.051,.047,1.);return;}
-  int start=LS[row],end=LS[row+1]-1;
+  int start=L(row),end=L(row+1)-1;
   int i=start+x;uint c=B(i);float ink=0.;
   if(row<83&&i<=end){
-   if(gy<6&&gx<5&&c>=32u&&c<=126u)ink=float((FONT[int(c)-32]>>(gy*5+gx))&1u);
+   if(gy<6&&gx<5&&c>=32u&&c<=126u)ink=float((F(int(c)-32)>>(gy*5+gx))&1u);
    // The last row visibly encodes all eight bits, including spaces. No OCR ambiguity.
    if(gy==7)ink=float((c>>gx)&1u);
   }
