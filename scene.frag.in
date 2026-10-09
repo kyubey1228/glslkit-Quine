@@ -35,6 +35,7 @@ void main(){
   }
   o=vec4(mix(vec3(.027,.051,.047),vec3(.78,.84,.62),ink),1.);return;
  }
+#ifndef OUROBOROS_CODE_ONLY
  vec2 uv=(2.*gl_FragCoord.xy-u_resolution)/min(u_resolution.x,u_resolution.y);
  float t=float(PHASE)*6.2831853/24.;
  uv+=u_pointer*.055;
@@ -84,4 +85,7 @@ void main(){
  col=1.-exp(-col*1.45);
  col+= (hash(gl_FragCoord.xy+fract(t))-.5)/180.;
  o=vec4(col,1.);
+#else
+ o=vec4(.027,.051,.047,1.);
+#endif
 }

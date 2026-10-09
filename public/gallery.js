@@ -10,18 +10,28 @@ function download(text,name){const url=URL.createObjectURL(new Blob([text],{type
 try {
 const canvas=$('art'),gl=canvas.getContext('webgl2',{alpha:false,antialias:false});
 if(!gl)throw new Error('WebGL2対応ブラウザで開いてください。');
-let program,uniforms,fragment=$('ouroboros-frag').textContent,rows=82;
+let program,codeProgram,uniforms,codeUniforms,lastCodePixels,fragment=$('ouroboros-frag').textContent,rows=82;
 const vertex=$('ouroboros-vert').textContent;
 function compile(type,text){const shader=gl.createShader(type);gl.shaderSource(shader,text);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){const log=gl.getShaderInfoLog(shader);gl.deleteShader(shader);throw new Error(log);}return shader;}
+function link(frag){
+ const next=gl.createProgram();let vs,fs;
+ try{vs=compile(gl.VERTEX_SHADER,vertex);fs=compile(gl.FRAGMENT_SHADER,frag);gl.attachShader(next,vs);gl.attachShader(next,fs);gl.linkProgram(next);if(!gl.getProgramParameter(next,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(next));return next;}
+ catch(error){gl.deleteProgram(next);throw error;}
+ finally{if(vs)gl.deleteShader(vs);if(fs)gl.deleteShader(fs);}
+}
+function setters(target,manifest){
+ const result={};for(const u of manifest.programs.ouroboros.uniforms){const loc=gl.getUniformLocation(target,u.name);result[u.name]=v=>gl[u.setter](loc,typeof v==='number'?[v]:v);}return result;
+}
 function install(frag,manifest){
- const next=gl.createProgram(),vs=compile(gl.VERTEX_SHADER,vertex),fs=compile(gl.FRAGMENT_SHADER,frag);
- gl.attachShader(next,vs);gl.attachShader(next,fs);gl.linkProgram(next);gl.deleteShader(vs);gl.deleteShader(fs);
- if(!gl.getProgramParameter(next,gl.LINK_STATUS)){const log=gl.getProgramInfoLog(next);gl.deleteProgram(next);throw new Error(log);}
- if(program)gl.deleteProgram(program);program=next;fragment=frag;gl.useProgram(program);uniforms={};
- for(const u of manifest.programs.ouroboros.uniforms){const loc=gl.getUniformLocation(program,u.name);uniforms[u.name]=v=>gl[u.setter](loc,typeof v==='number'?[v]:v);}
+ const next=link(frag);let nextCode;
+ try{nextCode=link(frag.replace(/^(#version[^\n]*\n)/,'$1#define OUROBOROS_CODE_ONLY 1\n'));}
+ catch(error){gl.deleteProgram(next);throw error;}
+ if(program)gl.deleteProgram(program);if(codeProgram)gl.deleteProgram(codeProgram);
+ program=next;codeProgram=nextCode;fragment=frag;gl.useProgram(program);uniforms=setters(program,manifest);codeUniforms=setters(codeProgram,manifest);
  rows=Number(frag.match(/const int NL\s*=\s*(\d+)/)[1])-1;
 }
 const set=(name,value)=>uniforms[name](value);
+const setCode=(name,value)=>codeUniforms[name](value);
 const pointer=[0,0],target=[0,0];let speed=1,paused=matchMedia('(prefers-reduced-motion: reduce)').matches,ready=false,busy=false,accumulator=0,last=performance.now(),raf;
 function pauseLabel(){$('pause').textContent=paused?'▶ 再生':'Ⅱ 静止';$('pause').setAttribute('aria-pressed',String(paused));}
 pauseLabel();$('pause').onclick=()=>{paused=!paused;pauseLabel();};
@@ -34,11 +44,26 @@ install(fragment,JSON.parse($('glsl-manifest').textContent));
 // Each glyph's eighth row contains eight visible bits, including spaces and newlines.
 function drawCode(){
  const w=201*8,h=rows*9,fb=gl.createFramebuffer(),tex=gl.createTexture(),pixels=new Uint8Array(w*h*4);
- try{gl.bindTexture(gl.TEXTURE_2D,tex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,tex,0);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw new Error('コード描画用バッファを作成できません');gl.disable(gl.DITHER);gl.viewport(0,0,w,h);set('u_resolution',new Float32Array([w,h]));set('u_mode',2);gl.drawArrays(gl.TRIANGLES,0,3);gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,pixels);if(gl.getError()!==gl.NO_ERROR)throw new Error('GPUコード描画に失敗しました');}
- finally{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.deleteTexture(tex);gl.deleteFramebuffer(fb);set('u_mode',1);}
+ try{gl.bindTexture(gl.TEXTURE_2D,tex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,tex,0);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw new Error('コード描画用バッファを作成できません');gl.disable(gl.DITHER);gl.useProgram(codeProgram);gl.viewport(0,0,w,h);setCode('u_resolution',new Float32Array([w,h]));setCode('u_mode',2);gl.drawArrays(gl.TRIANGLES,0,3);gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,pixels);if(gl.getError()!==gl.NO_ERROR)throw new Error('GPUコード描画に失敗しました');}
+ finally{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.deleteTexture(tex);gl.deleteFramebuffer(fb);gl.useProgram(program);set('u_mode',1);}
  sourceCanvas.width=w;sourceCanvas.height=h;const image=code2d.createImageData(w,h);
  for(let y=0;y<h;y++)image.data.set(pixels.subarray((h-1-y)*w*4,(h-y)*w*4),y*w*4);
- code2d.putImageData(image,0,0);
+ lastCodePixels=image.data;code2d.putImageData(image,0,0);
+}
+function readFailureDetails(start,index){
+ const raw=Array.from({length:8},(_,bit)=>lastCodePixels[start+bit*4]);
+ const w=64,h=Math.ceil(new TextEncoder().encode(source).length/(w*3)),fb=gl.createFramebuffer(),tex=gl.createTexture(),pixel=new Uint8Array(4),viewport=gl.getParameter(gl.VIEWPORT);
+ let data;
+ try{
+  gl.bindTexture(gl.TEXTURE_2D,tex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,tex,0);
+  if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw new Error('診断バッファ');
+  gl.useProgram(codeProgram);gl.viewport(0,0,w,h);setCode('u_mode',0);gl.drawArrays(gl.TRIANGLES,0,3);
+  gl.readPixels(Math.floor(index/3)%w,Math.floor(index/(w*3)),1,1,gl.RGBA,gl.UNSIGNED_BYTE,pixel);
+  if(gl.getError()!==gl.NO_ERROR)throw new Error('診断描画');data=pixel[index%3];
+ }catch(error){data=error.message;}
+ finally{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.deleteTexture(tex);gl.deleteFramebuffer(fb);gl.useProgram(program);gl.viewport(...viewport);}
+ return 'GPU点列: '+raw.join(',')+'; GPUバイト: '+data+'; GPU: '+gl.getParameter(gl.RENDERER);
 }
 function extractCode(){
  // Read the actual displayed glyph pixels. No SRC[] or source string is used here.
@@ -47,7 +72,7 @@ function extractCode(){
   let ended=false;
   for(let col=0;col<201;col++){
    let byte=0;const start=((row*9+7)*w+col*8)*4;for(let bit=0;bit<8;bit++){if(pixels[start+bit*4]>128)byte|=1<<bit;}
-   bytes.push(byte);if(byte===10){ended=true;break;}if(byte===0){const levels=Array.from({length:8},(_,bit)=>pixels[start+bit*4]);throw new Error('描画コードを読み取れません: '+row+','+col+' (赤成分: '+levels.join(',')+')');}
+   bytes.push(byte);if(byte===10){ended=true;break;}if(byte===0){const levels=Array.from({length:8},(_,bit)=>pixels[start+bit*4]);throw new Error('描画コードを読み取れません: '+row+','+col+' (赤成分: '+levels.join(',')+'; '+readFailureDetails(start,bytes.length-1)+')');}
   }
   if(!ended)throw new Error('コードの改行を読み取れません');
  }

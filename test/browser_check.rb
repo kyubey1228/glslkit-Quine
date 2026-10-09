@@ -6,6 +6,7 @@ check=<<~'JS'
 ready=true;showStatus();
 const checks={};
 const begin=source;
+checks.code_sheet_uses_separate_program=program!==codeProgram&&gl.isProgram(codeProgram);
 checks.visible_pixels_equal_source=extractCode()===begin;
 // Prove the next source is read from visible pixels: flipping one bit changes extraction.
 const originalPixel=code2d.getImageData(0,7,1,1),flipped=code2d.getImageData(0,7,1,1);
@@ -17,7 +18,10 @@ const failedX=59*8,failedY=25*9+7,savedBits=code2d.getImageData(failedX,failedY,
 try{
  code2d.putImageData(code2d.createImageData(8,1),failedX,failedY);
  let message='';try{extractCode();}catch(error){message=error.message;}
- checks.unreadable_pixels_report_position_and_levels=message.includes('25,59 (赤成分: 0,0,0,0,0,0,0,0)');
+ checks.unreadable_pixels_report_position_and_levels=message.includes('25,59 (赤成分: 0,0,0,0,0,0,0,0;');
+ const failedIndex=begin.split('\n').slice(0,25).reduce((n,line)=>n+line.length+1,0)+59;
+ checks.failed_read_compares_gpu_data=message.includes('GPUバイト: '+new TextEncoder().encode(begin)[failedIndex]+';');
+ checks.failed_read_restores_art_program=gl.getParameter(gl.CURRENT_PROGRAM)===program;
 }finally{code2d.putImageData(savedBits,failedX,failedY);}
 checks.restored_pixels_recover_exact_source=extractCode()===begin;
 function sample(){gl.viewport(0,0,canvas.width,canvas.height);set('u_mode',1);set('u_resolution',new Float32Array([canvas.width,canvas.height]));set('u_pointer',new Float32Array([0,0]));gl.drawArrays(gl.TRIANGLES,0,3);const data=new Uint8Array(96*96*4);gl.readPixels(Math.floor(canvas.width*.76),Math.floor(canvas.height*.5),96,96,gl.RGBA,gl.UNSIGNED_BYTE,data);return data;}

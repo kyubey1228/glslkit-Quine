@@ -1,7 +1,10 @@
 {
+  "code_sheet_uses_separate_program": true,
   "visible_pixels_equal_source": true,
   "extraction_depends_on_drawn_pixels": true,
   "unreadable_pixels_report_position_and_levels": true,
+  "failed_read_compares_gpu_data": true,
+  "failed_read_restores_art_program": true,
   "restored_pixels_recover_exact_source": true,
   "automatic_playback_executes_ruby": true,
   "real_ruby_output_becomes_next_frame": true,
